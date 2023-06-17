@@ -1,12 +1,12 @@
 import os
 from PIL import Image
-from tkinter import Tk, Button, Label, filedialog, Entry
-
+from tkinter import Tk, Button, Label, filedialog, Entry, ImageTk
 
 class GBatchCropApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Batch Crop App")
+        self.root.title("Gading's Batch Crop App v1.0-alpha")
+        self.root.geometry("500x300")
 
         self.label = Label(self.root, text="Select the input directory:")
         self.label.pack()
@@ -19,15 +19,24 @@ class GBatchCropApp:
 
         self.status_label = Label(self.root, text="")
         self.status_label.pack()
+        
+        self.preview_label = Label(self.root)
+        self.preview_label.pack()
 
         self.input_directory = None
         self.crop_dimensions = None
 
     def select_directory(self):
         self.input_directory = filedialog.askdirectory()
+        files = os.listdir(self.input_directory)
+        first_image = files[0]
+        del files
         if self.input_directory:
-            self.crop_button.config(state="normal")
+            self.show_preview(first_image)
             self.status_label.config(text=f"Selected directory: {self.input_directory}")
+            self.set_crop_dimensions_button = Button(self.root, text="Crop Size", command=self.set_crop_dimensions)
+            self.set_crop_dimensions_button.pack()
+            self.set_crop_button_state()
 
     def crop_images(self):
         output_directory = os.path.join(self.input_directory, "cropped")
@@ -56,6 +65,25 @@ class GBatchCropApp:
     def set_crop_dimensions(self):
         CropDimensionsDialog(self.root, self)
 
+    def set_crop_button_state(self):
+        if self.crop_dimensions is not None and self.input_directory is not None:
+            self.crop_button.config(state="normal")
+        else:
+            self.crop_button.config(state="disabled")
+
+    def show_preview(self, image):
+        # Resize the image to fit within the preview label dimensions
+        max_width = 300
+        max_height = 300
+        image.thumbnail((max_width, max_height))
+
+        # Convert the PIL Image to Tkinter PhotoImage
+        photo = ImageTk.PhotoImage(image)
+
+        # Update the preview label with the new image
+        self.preview_label.config(image=photo)
+        self.preview_label.image = photo
+
 
 class CropDimensionsDialog:
     def __init__(self, root, app):
@@ -82,7 +110,6 @@ class CropDimensionsDialog:
                 self.dialog.destroy()
             except ValueError:
                 pass
-
 
 if __name__ == "__main__":
     root = Tk()
