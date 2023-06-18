@@ -1,12 +1,12 @@
 import os
-from PIL import Image
-from tkinter import Tk, Button, Label, filedialog, Entry, ImageTk
+from PIL import Image, ImageTk
+from tkinter import Tk, Button, Label, filedialog, Entry
 
 class GBatchCropApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Gading's Batch Crop App v1.0-alpha")
-        self.root.geometry("500x300")
+        self.root.geometry("500x400")
 
         self.label = Label(self.root, text="Select the input directory:")
         self.label.pack()
@@ -28,11 +28,8 @@ class GBatchCropApp:
 
     def select_directory(self):
         self.input_directory = filedialog.askdirectory()
-        files = os.listdir(self.input_directory)
-        first_image = files[0]
-        del files
         if self.input_directory:
-            self.show_preview(first_image)
+            self.show_preview()
             self.status_label.config(text=f"Selected directory: {self.input_directory}")
             self.set_crop_dimensions_button = Button(self.root, text="Crop Size", command=self.set_crop_dimensions)
             self.set_crop_dimensions_button.pack()
@@ -71,11 +68,19 @@ class GBatchCropApp:
         else:
             self.crop_button.config(state="disabled")
 
-    def show_preview(self, image):
+    def show_preview(self):
+        self.preview_label.config(image=None)
+        files = os.listdir(self.input_directory)
+        first_image = files[0]
+        del files
+        
+        file_image_path = os.path.join(self.input_directory, first_image)
+        image = Image.open(file_image_path)
+
         # Resize the image to fit within the preview label dimensions
         max_width = 300
         max_height = 300
-        image.thumbnail((max_width, max_height))
+        image.resize((max_width, max_height))
 
         # Convert the PIL Image to Tkinter PhotoImage
         photo = ImageTk.PhotoImage(image)
