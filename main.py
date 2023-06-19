@@ -6,7 +6,7 @@ class GBatchCropApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Gading's Batch Crop App v1.0-alpha")
-        self.root.geometry("500x400")
+        self.root.geometry("500x800")
 
         self.label = Label(self.root, text="Select the input directory:")
         self.label.pack()
@@ -71,22 +71,25 @@ class GBatchCropApp:
     def show_preview(self):
         self.preview_label.config(image=None)
         files = os.listdir(self.input_directory)
-        first_image = files[0]
+        for file in files:
+            if file.lower().endswith((".jpg", ".jpeg", ".png")): 
+                first_image = file
+                break
         del files
         
         file_image_path = os.path.join(self.input_directory, first_image)
         image = Image.open(file_image_path)
 
         # Resize the image to fit within the preview label dimensions
-        max_width = 300
-        max_height = 300
-        image.resize((max_width, max_height))
+        max_width = 480
+        max_height = 640
+        image.crop((0, 0, max_width, max_height))
 
         # Convert the PIL Image to Tkinter PhotoImage
         photo = ImageTk.PhotoImage(image)
 
         # Update the preview label with the new image
-        self.preview_label.config(image=photo)
+        self.preview_label.config(image=photo, height=max_height, width=max_width)
         self.preview_label.image = photo
 
 
