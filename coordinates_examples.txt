@@ -15,3 +15,8 @@ s/2 = 18 (shift/2)
 for i in range(tiles): #kolom
     for j in range(tiles): #baris
         
+        m[i][j][0] = a*j
+        m[i][j][1] = b*i
+        a = a*(j+1)
+        m[i][j][2] = a+s
+        m[i][j][3] = b+(s/2)
