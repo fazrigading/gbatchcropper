@@ -23,7 +23,7 @@ class GBatchCropApp:
         self.preview_label = Label(self.root)
         self.preview_label.pack()
 
-        self.input_directory = None
+        # self.input_directory = None
         self.crop_dimensions = None
 
     def select_directory(self):
@@ -54,10 +54,7 @@ class GBatchCropApp:
                     pass
 
         self.status_label.config(text="Cropping complete!")
-
         self.crop_button.config(state="disabled")
-        self.input_directory = None
-        self.crop_dimensions = None
 
     def set_crop_dimensions(self):
         CropDimensionsDialog(self.root, self)
