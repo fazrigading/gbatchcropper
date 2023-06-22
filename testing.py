@@ -7,21 +7,25 @@
 # 0, 2b, a+32, 3b    | a, 2b, 2a+32, 3b    | 2a, 2b, 3a, 3b
 
 a = 640 #width
-b = 480 #height
-s = 32  #shift
+b = 360 #height
+# Shift is the same as the aspect ratio of the image (which is 16:9)
+s1 = 32  #shift width (16*2)
+s2 = 18  #shift height (9*2)
 tiles = 3 #tiles
 
 def threeDimensionalArray(a, b, c):
     x = [[[0 for _ in range(a)] for _ in range(b)] for _ in range(c)]
     return x
 
-m = threeDimensionalArray(4,2,3)
-print(m)
+m = threeDimensionalArray(4,3,3)
 
 for i in range(tiles): # columns
     for j in range(tiles): # rows
         m[i][j][0] = a*j
-        m[i][j][1] = b*i
-        a = a*(j+1)
-        m[i][j][2] = a+s
-        m[i][j][3] = b+(s/2)
+        m[i][j][1] = b*i 
+        m[i][j][2] = a*(j+1) if j == 2 else a*(j+1)+s1
+        m[i][j][3] = b*(i+1) if i == 2 else b*(i+1)+s2
+
+for i in range(tiles): # columns
+    for j in range(tiles): # rows
+        print(m[i][j])
