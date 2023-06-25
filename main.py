@@ -9,7 +9,7 @@ from tkinter import Tk, Button, Label, filedialog, ttk
 class GBatchCropApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Gading's Batch Crop App v1.0-alpha")
+        self.root.title("Gading's Batch Crop App v1.1-alpha")
         self.root.geometry("500x250")
         self.root.resizable(width=False, height=False)
 
