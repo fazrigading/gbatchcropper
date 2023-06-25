@@ -19,9 +19,6 @@ class GBatchCropApp:
         self.crop_button = Button(self.root, text="Crop", command=self.crop_images, state="disabled")
         self.crop_button.pack(pady=10)
 
-        self.progBar = ttk.Progressbar(self.root, orient="horizontal", length=300, mode="determinate")
-        self.progBar.pack(pady=10)
-
         self.status_label = Label(self.root, text="")
         self.status_label.pack()
 
@@ -66,6 +63,10 @@ class GBatchCropApp:
         print(self.total_images)
         return file_list
 
+    # def startProgressBar(self):
+    #     th = threading.Thread(target=self.crop_images)
+    #     th.start()
+
     def crop_images(self):
         output_directory = os.path.join(self.input_directory, "cropped")
         os.makedirs(output_directory, exist_ok=True)
@@ -79,7 +80,9 @@ class GBatchCropApp:
 
         crop_dimensions_list = self.cropDimensionalArray(w, h, r1, r2, tiles)
         number_suffix = 1
-        x = (self.total_images*(tiles**2)) / 300 # 300 is progress length
+        self.total_cropped_images = self.total_images*(tiles*tiles) # 300 is progress length
+        self.progBar = ttk.Progressbar(self.root, length=300, maximum=self.total_cropped_images)
+        self.progBar.pack(pady=10)
         
         for i in range(tiles):
             for j in range(tiles):
@@ -97,7 +100,9 @@ class GBatchCropApp:
                         except (IOError, OSError):
                             pass
                 number_suffix += 1
-                self.progBar['value'] += x
+                self.root.update_idletasks()
+                self.progBar['value'] += self.total_images
+                self.root.after(100)
         self.status_label.config(text="Cropping complete!")
 
 if __name__ == "__main__":
