@@ -21,8 +21,8 @@ m = threeDimensionalArray(4,3,3)
 
 for i in range(tiles): # columns
     for j in range(tiles): # rows
-        m[i][j][0] = a*j
-        m[i][j][1] = b*i 
+        m[i][j][0] = a*j if j != 2 else a*j-s1
+        m[i][j][1] = b*i if i != 2 else b*i-s2
         m[i][j][2] = a*(j+1) if j == 2 else a*(j+1)+s1
         m[i][j][3] = b*(i+1) if i == 2 else b*(i+1)+s2
 
