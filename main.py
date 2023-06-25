@@ -1,4 +1,4 @@
-from fnmatch import filter
+from fnmatch import filter as fnfilter
 import os
 from PIL import Image
 from tkinter import Tk, Button, Label, filedialog, ttk
@@ -75,7 +75,7 @@ class GBatchCropApp:
 
     def scanImages(self, dir):
         self.file_list = os.listdir(dir)
-        self.total_images = len(filter(self.file_list, '*.JPG'))
+        self.total_images = len(fnfilter(self.file_list, '*.JPG'))
         print(self.total_images)
 
     def crop_images(self):
