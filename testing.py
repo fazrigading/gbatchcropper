@@ -6,11 +6,16 @@
 # 0, 1b, a+32, 2b+18 | a, 1b, 2a+32, 2b+18 | 2a, 1b, 3a, 2b+18
 # 0, 2b, a+32, 3b    | a, 2b, 2a+32, 3b    | 2a, 2b, 3a, 3b
 
-a = 640 #width
-b = 360 #height
+# a = 640 #width
+# b = 360 #height
 # Shift is the same as the aspect ratio of the image (which is 16:9)
-s1 = 32  #shift width (16*2)
-s2 = 18  #shift height (9*2)
+# s1 = 32  #shift width (16*2)
+# s2 = 18  #shift height (9*2)
+
+a = 640 #width
+b = 426 #height
+s1 = 36  #shift width (6*3)
+s2 = 12  #shift height (4*3)
 tiles = 3 #tiles
 
 def threeDimensionalArray(a, b, c):
