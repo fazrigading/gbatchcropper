@@ -9,7 +9,7 @@ from tkinter import Tk, Button, Label, filedialog, ttk
 class GBatchCropApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Gading's Batch Crop App v1.1-alpha")
+        self.root.title("Gading's Batch Crop App v1.1")
         self.root.geometry("500x250")
         self.root.resizable(width=False, height=False)
 
@@ -25,19 +25,11 @@ class GBatchCropApp:
         self.progBar = ttk.Progressbar(self.root, length=400)
         self.progBar.pack(pady=10)
 
-        self.image_status = Label(self.root, text="0 of 0 images cropped")
+        self.image_status = Label(self.root, text="0 of 0 images cropped from 0 data")
         self.image_status.pack(pady=5)
 
         self.status_label = Label(self.root, text="Waiting for input...")
         self.status_label.pack(pady=5)
-
-    def set_img_resolution(self, w, h, r1, r2, t):
-        self.w = w
-        self.h = h
-        self.r1 = r1
-        self.r2 = r2
-        self.tiles = t
-        return self.w, self.h, self.r1, self.r2, self.tiles
 
     def select_directory(self):
         self.input_directory = filedialog.askdirectory()
@@ -45,17 +37,12 @@ class GBatchCropApp:
             self.status_label.config(text=f"Selected directory: {self.input_directory}")
             self.crop_button.config(state="normal")
             self.scanImages(self.input_directory)
-            w, h, r, s, t = self.set_img_resolution(720, 480, 3, 2, 3)
-            self.crop_dimensions_list = self.cropDimensionalArray(w, h, r, s, t)
+            self.tiles = 3
+            self.crop_dimensions_list = self.cropDimensionalArray(width=640, height=426, w_ratio=3, h_ratio=2, tiles=self.tiles)
             self.number_suffix = 1
-            self.total_cropped_images = self.total_images*(self.tiles**2) # 300 is progress length
+            self.total_cropped_images = self.total_images*(self.tiles**2)
             self.progBar['maximum'] = self.total_cropped_images
-            self.image_status['text'] = "0 of {} images cropped".format(self.total_cropped_images)
-
-    def threeDimensionalArray(self, coords_num=4, columns=3, rows=3):
-        '''Construct a three-dimensional array from coordinates number, columns, and rows.'''
-        x = [[[0 for _ in range(coords_num)] for _ in range(columns)] for _ in range(rows)]
-        return x
+            self.image_status['text'] = "0 of {} images cropped from {} data".format(self.total_cropped_images, self.total_images)
     
     def cropDimensionalArray(self, width, height, w_ratio, h_ratio, tiles):
         '''
@@ -65,8 +52,10 @@ class GBatchCropApp:
         H_ratio: height ratio of the cropped image
         Tiles: number of tiles
         '''
-        w_ratio = 10*w_ratio
-        h_ratio = 10*h_ratio
+        self.w = width
+        self.h = height
+        w_ratio = 3*w_ratio
+        h_ratio = 3*h_ratio
         m = self.threeDimensionalArray(4, tiles, tiles)
         for i in range(tiles): # columns
             for j in range(tiles): # rows
@@ -76,14 +65,18 @@ class GBatchCropApp:
                 m[i][j][3] = height*(i+1) if i == 2 else height*(i+1) + h_ratio
         return m
 
+    def threeDimensionalArray(self, coords_num=4, columns=3, rows=3):
+        '''Construct a three-dimensional array from coordinates number, columns, and rows.'''
+        x = [[[0 for _ in range(coords_num)] for _ in range(columns)] for _ in range(rows)]
+        return x
+
     def scanImages(self, dir):
         self.file_list = os.listdir(dir)
         self.total_images = len(fnfilter(self.file_list, '*.JPG'))
-        print(self.total_images)
 
     def crop_images(self):
-        folder_name = "cropped"
-        output_directory = os.path.join(self.input_directory, "cropped")
+        folder_name = str(self.w) + "x" + str(self.h) + "_cropped"
+        output_directory = os.path.join(self.input_directory, folder_name)
         os.makedirs(output_directory, exist_ok=True)
         # image_extensions = (".jpg", ".jpeg", ".png")
         
@@ -105,7 +98,7 @@ class GBatchCropApp:
                 self.number_suffix += 1
                 self.root.update_idletasks()
                 self.progBar['value'] += self.total_images
-                self.image_status['text'] = "{} of {} images cropped".format(int(self.progBar['value']), self.total_cropped_images)
+                self.image_status['text'] = "{} of {} images cropped from {} data".format(int(self.progBar['value']), self.total_cropped_images, self.total_images)
                 self.root.after(100)
         self.status_label.config(text="Cropping complete!")
 
