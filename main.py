@@ -31,19 +31,22 @@ class GBatchCropApp:
         self.status_label = Label(self.root, text="Waiting for input...")
         self.status_label.pack(pady=5)
 
+    def set_img_resolution(self, w, h, r1, r2, t):
+        self.w = w
+        self.h = h
+        self.r1 = r1
+        self.r2 = r2
+        self.tiles = t
+        return self.w, self.h, self.r1, self.r2, self.tiles
+
     def select_directory(self):
         self.input_directory = filedialog.askdirectory()
         if self.input_directory:
             self.status_label.config(text=f"Selected directory: {self.input_directory}")
             self.crop_button.config(state="normal")
             self.scanImages(self.input_directory)
-            w = 720
-            h = 480
-            r1 = 3
-            r2 = 2
-            self.tiles = 3
-
-            self.crop_dimensions_list = self.cropDimensionalArray(w, h, r1, r2, self.tiles)
+            w, h, r, s, t = self.set_img_resolution(720, 480, 3, 2, 3)
+            self.crop_dimensions_list = self.cropDimensionalArray(w, h, r, s, t)
             self.number_suffix = 1
             self.total_cropped_images = self.total_images*(self.tiles**2) # 300 is progress length
             self.progBar['maximum'] = self.total_cropped_images
@@ -79,6 +82,7 @@ class GBatchCropApp:
         print(self.total_images)
 
     def crop_images(self):
+        folder_name = "cropped"
         output_directory = os.path.join(self.input_directory, "cropped")
         os.makedirs(output_directory, exist_ok=True)
         # image_extensions = (".jpg", ".jpeg", ".png")
