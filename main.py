@@ -37,10 +37,10 @@ class GBatchCropApp:
             self.status_label.config(text=f"Selected directory: {self.input_directory}")
             self.crop_button.config(state="normal")
             self.scanImages(self.input_directory)
-            w = 640
-            h = 360
-            r1 = 16
-            r2 = 9
+            w = 720
+            h = 480
+            r1 = 3
+            r2 = 2
             self.tiles = 3
 
             self.crop_dimensions_list = self.cropDimensionalArray(w, h, r1, r2, self.tiles)
@@ -62,8 +62,8 @@ class GBatchCropApp:
         H_ratio: height ratio of the cropped image
         Tiles: number of tiles
         '''
-        w_ratio = 2*w_ratio
-        h_ratio = 2*h_ratio
+        w_ratio = 10*w_ratio
+        h_ratio = 10*h_ratio
         m = self.threeDimensionalArray(4, tiles, tiles)
         for i in range(tiles): # columns
             for j in range(tiles): # rows
